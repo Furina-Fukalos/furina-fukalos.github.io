@@ -414,7 +414,7 @@ gitalk:
 # https://giscus.app/zh-CN
 giscus:
   enable: true
-  repo: staceykd/furina.github.io
+  repo: Furina-Fukalos/furina.github.io
   repoId: R_kgDOULvUBg
   category: General
   categoryId: DIC_kwDOULvUBs4DE2Dj

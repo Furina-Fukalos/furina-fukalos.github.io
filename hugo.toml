@@ -1,4 +1,4 @@
-baseURL = "https://github.com/Furina-Fukalos/furina.github.io"
+baseURL = "https://furina-fukalos.github.io/furina.github.io/"
 locale = 'zh-cn'
 title = 'CTF 新手学习'
 theme = "reimu"
