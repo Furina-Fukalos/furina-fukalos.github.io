@@ -5,7 +5,7 @@ on:
     branches:
       - source
   schedule:
-    - cron: '0 1 * * *' # 每天北京时间 9:00 自动运行
+    - cron: '0 1 * * *' # 每天北京时间 9:00 自动构建刷新
   workflow_dispatch:
 
 permissions:
@@ -20,7 +20,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          submodules: true # 默认就在 source 分支，不需要 ref: source 了
+          submodules: true
 
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v2
@@ -31,10 +31,18 @@ jobs:
       - name: Build
         run: hugo --minify
 
-      # 把生成的 public 目录推送到 main 分支
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
-          publish_branch: main # 部署到 main 分支
+          path: ./public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
