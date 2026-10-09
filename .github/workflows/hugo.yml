@@ -1,0 +1,40 @@
+name: Deploy Hugo site to Pages
+
+on:
+  push:
+    branches:
+      - source
+  schedule:
+    - cron: '0 1 * * *' # 每天北京时间 9:00 自动运行
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true # 默认就在 source 分支，不需要 ref: source 了
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: 'latest'
+          extended: true
+
+      - name: Build
+        run: hugo --minify
+
+      # 把生成的 public 目录推送到 main 分支
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          publish_branch: main # 部署到 main 分支
