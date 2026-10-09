@@ -1,0 +1,49 @@
+<!-- layouts/shortcodes/external-rss.html -->
+{{ $rssUrl := "https://forum.butian.net/Rss" }}
+{{ with try (resources.GetRemote $rssUrl) }}
+  {{ with .Err }}
+    <p style="color: red;">获取 RSS 失败: {{ . }}</p>
+  {{ else }}
+    {{ $rss := .Value.Content | transform.Unmarshal }}
+    <ul class="external-rss-list">
+      {{ range first 5 $rss.channel.item }}
+        <li class="external-rss-item">
+          <a href="{{ .link }}" target="_blank" rel="noopener">{{ .title }}</a>
+          <span class="external-rss-date">{{ .pubDate | time.Format "2006-01-02" }}</span>
+        </li>
+      {{ end }}
+    </ul>
+  {{ end }}
+{{ else }}
+  <p>无法获取远程 RSS 资源。</p>
+{{ end }}
+
+<style>
+.external-rss-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.external-rss-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--border-color, #ddd);
+}
+.external-rss-item a {
+  color: var(--link-color, #007bff);
+  text-decoration: none;
+  flex: 1;
+  margin-right: 12px;
+  font-weight: 500;
+}
+.external-rss-item a:hover {
+  text-decoration: underline;
+}
+.external-rss-date {
+  font-size: 0.8em;
+  color: var(--text-secondary, #888);
+  white-space: nowrap;
+}
+</style>
