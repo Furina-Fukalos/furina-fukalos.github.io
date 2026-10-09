@@ -352,7 +352,7 @@ comment:
     zh-TW: 說些什麼吧！
     ja: コメントを残す
     pt-BR: Deixe um comentário
-  default: waline # default comment system, when you enable multiple comment systems
+  default: giscus # default comment system, when you enable multiple comment systems
 
 # valine comment system. https://valine.js.org
 # version 1.5.1
@@ -414,10 +414,10 @@ gitalk:
 # https://giscus.app/zh-CN
 giscus:
   enable: true
-  repo: Furina-Fukalos/furina.github.io
-  repoId: R_kgDOULvUBg
+  repo: Furina-Fukalos/furina-fukalos.github.io
+  repoId: R_kgDOUkzqYA
   category: General
-  categoryId: DIC_kwDOULvUBs4DE2Dj
+  categoryId: DIC_kwDOUkzqYM4DHYgI
   mapping: pathname
   strict: 0
   reactionsEnabled: 1
