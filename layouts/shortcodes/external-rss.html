@@ -1,32 +1,61 @@
 <!-- layouts/shortcodes/external-rss.html -->
-{{ $rssUrl := "https://butian-rss-proxy.1587253748.workers.dev/" }}
-{{ $opts := dict
-  "headers" (dict
-    "User-Agent" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-    "Accept" "application/rss+xml, application/xml, text/xml, */*"
-  )
-}}
-{{ with try (resources.GetRemote $rssUrl $opts) }}
-  {{ with .Err }}
-    <div style="padding: 12px; background: #fff3cd; color: #856404; border: 1px solid #ffeeba; border-radius: 6px; font-size: 0.9em; line-height: 1.5;">
-      <p>⚠️ 暂时无法获取安全资讯。</p>
-      <p style="font-size: 0.8em; margin-bottom: 0;">原因：源站拒绝了服务器请求（Forbidden）。你可以尝试在本地开启代理后重新构建，或者等待每日定时任务再次尝试。</p>
-    </div>
-  {{ else }}
-    {{ $rss := .Value.Content | transform.Unmarshal }}
-    <ul class="external-rss-list">
-      {{ range first 5 $rss.channel.item }}
-        <li class="external-rss-item">
-          <a href="{{ .link }}" target="_blank" rel="noopener">{{ .title }}</a>
-          <span class="external-rss-date">{{ .pubDate | time.Format "2006-01-02" }}</span>
-        </li>
-      {{ end }}
-    </ul>
-  {{ end }}
-{{ else }}
-  <p>无法获取远程 RSS 资源。</p>
-{{ end }}
+<div id="external-rss-container">
+  <p>正在加载安全资讯...</p>
+</div>
+
+<script>
+(function() {
+  // ⚠️⚠️⚠️ 替换成你刚刚部署成功的 Cloudflare Worker 地址 ⚠️⚠️⚠️
+  var workerUrl = "https://butian-rss-proxy.1587253748.workers.dev/"; 
+  
+  var container = document.getElementById("external-rss-container");
+  if (!container) return;
+
+  fetch(workerUrl)
+    .then(function(res) {
+      if (!res.ok) throw new Error("Network error");
+      return res.text();
+    })
+    .then(function(str) {
+      var parser = new DOMParser();
+      var xmlDoc = parser.parseFromString(str, "text/xml");
+      var items = xmlDoc.querySelectorAll("item");
+      
+      if (items.length === 0) {
+        container.innerHTML = "<p>暂无订阅内容。</p>";
+        return;
+      }
+
+      var html = '<ul class="external-rss-list">';
+      // 只取前 5 条
+      for (var i = 0; i < Math.min(items.length, 5); i++) {
+        var item = items[i];
+        var title = item.querySelector("title") ? item.querySelector("title").textContent : "无标题";
+        var link = item.querySelector("link") ? item.querySelector("link").textContent : "#";
+        var pubDate = item.querySelector("pubDate") ? item.querySelector("pubDate").textContent : "";
+        
+        var dateStr = pubDate ? new Date(pubDate).toISOString().split('T')[0] : "";
+
+        html += '<li class="external-rss-item">'
+          + '<a href="' + link + '" target="_blank" rel="noopener">' + title + '</a>'
+          + '<span class="external-rss-date">' + dateStr + '</span>'
+          + '</li>';
+      }
+      html += '</ul>';
+      container.innerHTML = html;
+    })
+    .catch(function(err) {
+      console.error("RSS 加载失败：", err);
+      container.innerHTML = "<p>暂时无法获取安全资讯，请稍后重试。</p>";
+    });
+})();
+</script>
 
 <style>
-/* ... 保留你之前的样式 ... */
+/* 保持你之前的样式不变 */
+.external-rss-list { list-style: none; padding: 0; margin: 0; }
+.external-rss-item { display: flex; justify-content: space-between; align-items: baseline; padding: 8px 0; border-bottom: 1px dashed var(--border-color, #ddd); }
+.external-rss-item a { color: var(--link-color, #007bff); text-decoration: none; flex: 1; margin-right: 12px; font-weight: 500; }
+.external-rss-item a:hover { text-decoration: underline; }
+.external-rss-date { font-size: 0.8em; color: var(--text-secondary, #888); white-space: nowrap; }
 </style>
