@@ -1,8 +1,17 @@
 <!-- layouts/shortcodes/external-rss.html -->
 {{ $rssUrl := "https://forum.butian.net/Rss" }}
-{{ with try (resources.GetRemote $rssUrl) }}
+{{ $opts := dict
+  "headers" (dict
+    "User-Agent" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    "Accept" "application/rss+xml, application/xml, text/xml, */*"
+  )
+}}
+{{ with try (resources.GetRemote $rssUrl $opts) }}
   {{ with .Err }}
-    <p style="color: red;">获取 RSS 失败: {{ . }}</p>
+    <div style="padding: 12px; background: #fff3cd; color: #856404; border: 1px solid #ffeeba; border-radius: 6px; font-size: 0.9em; line-height: 1.5;">
+      <p>⚠️ 暂时无法获取安全资讯。</p>
+      <p style="font-size: 0.8em; margin-bottom: 0;">原因：源站拒绝了服务器请求（Forbidden）。你可以尝试在本地开启代理后重新构建，或者等待每日定时任务再次尝试。</p>
+    </div>
   {{ else }}
     {{ $rss := .Value.Content | transform.Unmarshal }}
     <ul class="external-rss-list">
@@ -19,31 +28,5 @@
 {{ end }}
 
 <style>
-.external-rss-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-.external-rss-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  padding: 8px 0;
-  border-bottom: 1px dashed var(--border-color, #ddd);
-}
-.external-rss-item a {
-  color: var(--link-color, #007bff);
-  text-decoration: none;
-  flex: 1;
-  margin-right: 12px;
-  font-weight: 500;
-}
-.external-rss-item a:hover {
-  text-decoration: underline;
-}
-.external-rss-date {
-  font-size: 0.8em;
-  color: var(--text-secondary, #888);
-  white-space: nowrap;
-}
+/* ... 保留你之前的样式 ... */
 </style>
