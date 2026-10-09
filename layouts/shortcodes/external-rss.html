@@ -5,12 +5,72 @@
 
 <script>
 (function() {
-  // ⚠️⚠️⚠️ 替换成你刚刚部署成功的 Cloudflare Worker 地址 ⚠️⚠️⚠️
+  // ⚠️⚠️⚠️ 替换成你部署的 Cloudflare Worker 地址 ⚠️⚠️⚠️
   var workerUrl = "https://butian-rss-proxy.1587253748.workers.dev/"; 
   
   var container = document.getElementById("external-rss-container");
   if (!container) return;
 
+  var itemsPerPage = 5; // 👈 每页显示的数量，你可以在这里修改
+  var allItems = [];    // 存储所有的资讯条目
+  var currentPage = 1;  // 当前页码
+
+  // 渲染指定页面的函数
+  function renderPage(page) {
+    var totalPages = Math.ceil(allItems.length / itemsPerPage);
+    if (page < 1) page = 1;
+    if (page > totalPages) page = totalPages;
+    currentPage = page;
+
+    var start = (page - 1) * itemsPerPage;
+    var end = start + itemsPerPage;
+    var pageItems = allItems.slice(start, end);
+
+    // 1. 渲染资讯列表
+    var html = '<ul class="external-rss-list">';
+    pageItems.forEach(function(item) {
+      var pubDate = item.pubDate || "";
+      var dateStr = pubDate ? new Date(pubDate).toISOString().split('T')[0] : "";
+      html += '<li class="external-rss-item">'
+        + '<a href="' + item.link + '" target="_blank" rel="noopener">' + item.title + '</a>'
+        + '<span class="external-rss-date">' + dateStr + '</span>'
+        + '</li>';
+    });
+    html += '</ul>';
+
+    // 2. 渲染分页按钮
+    if (totalPages > 1) {
+      html += '<div class="external-rss-pagination">';
+      
+      // 上一页按钮
+      if (page > 1) {
+        html += '<a href="javascript:void(0)" onclick="window.externalRssChangePage(' + (page - 1) + ')" class="page-btn">上一页</a>';
+      } else {
+        html += '<span class="page-btn disabled">上一页</span>';
+      }
+
+      // 页码显示
+      html += '<span class="page-info">' + page + ' / ' + totalPages + '</span>';
+
+      // 下一页按钮
+      if (page < totalPages) {
+        html += '<a href="javascript:void(0)" onclick="window.externalRssChangePage(' + (page + 1) + ')" class="page-btn">下一页</a>';
+      } else {
+        html += '<span class="page-btn disabled">下一页</span>';
+      }
+
+      html += '</div>';
+    }
+
+    container.innerHTML = html;
+  }
+
+  // 暴露给全局的切换页码函数，供 onclick 调用
+  window.externalRssChangePage = function(page) {
+    renderPage(page);
+  };
+
+  // 获取并解析 RSS 数据
   fetch(workerUrl)
     .then(function(res) {
       if (!res.ok) throw new Error("Network error");
@@ -26,23 +86,17 @@
         return;
       }
 
-      var html = '<ul class="external-rss-list">';
-      // 只取前 5 条
-      for (var i = 0; i < Math.min(items.length, 5); i++) {
-        var item = items[i];
-        var title = item.querySelector("title") ? item.querySelector("title").textContent : "无标题";
-        var link = item.querySelector("link") ? item.querySelector("link").textContent : "#";
-        var pubDate = item.querySelector("pubDate") ? item.querySelector("pubDate").textContent : "";
-        
-        var dateStr = pubDate ? new Date(pubDate).toISOString().split('T')[0] : "";
+      // 将 NodeList 转换为数组，并提取需要的数据
+      allItems = Array.from(items).map(function(item) {
+        return {
+          title: item.querySelector("title") ? item.querySelector("title").textContent : "无标题",
+          link: item.querySelector("link") ? item.querySelector("link").textContent : "#",
+          pubDate: item.querySelector("pubDate") ? item.querySelector("pubDate").textContent : ""
+        };
+      });
 
-        html += '<li class="external-rss-item">'
-          + '<a href="' + link + '" target="_blank" rel="noopener">' + title + '</a>'
-          + '<span class="external-rss-date">' + dateStr + '</span>'
-          + '</li>';
-      }
-      html += '</ul>';
-      container.innerHTML = html;
+      // 初始渲染第一页
+      renderPage(1);
     })
     .catch(function(err) {
       console.error("RSS 加载失败：", err);
@@ -52,10 +106,43 @@
 </script>
 
 <style>
-/* 保持你之前的样式不变 */
+/* 列表样式 */
 .external-rss-list { list-style: none; padding: 0; margin: 0; }
 .external-rss-item { display: flex; justify-content: space-between; align-items: baseline; padding: 8px 0; border-bottom: 1px dashed var(--border-color, #ddd); }
 .external-rss-item a { color: var(--link-color, #007bff); text-decoration: none; flex: 1; margin-right: 12px; font-weight: 500; }
 .external-rss-item a:hover { text-decoration: underline; }
 .external-rss-date { font-size: 0.8em; color: var(--text-secondary, #888); white-space: nowrap; }
+
+/* 分页样式 */
+.external-rss-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  font-size: 0.9em;
+}
+.external-rss-pagination .page-btn {
+  padding: 4px 10px;
+  border: 1px solid var(--border-color, #ddd);
+  border-radius: 6px;
+  color: var(--link-color, #007bff);
+  text-decoration: none;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.external-rss-pagination .page-btn:hover:not(.disabled) {
+  background-color: var(--link-color, #007bff);
+  color: #fff;
+  border-color: var(--link-color, #007bff);
+}
+.external-rss-pagination .page-btn.disabled {
+  color: var(--text-secondary, #aaa);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.external-rss-pagination .page-info {
+  color: var(--text-color, #333);
+  font-weight: 500;
+}
 </style>
