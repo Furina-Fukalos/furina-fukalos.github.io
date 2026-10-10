@@ -32,7 +32,7 @@ timeFormat: "2006-01-02 15:04:05"
 
 author: stacey
 email: 1587253748@qq.com
-description: "正在创建地块..."
+description: "岂不闻，光阴如骏马加鞭，日月如落花流水"
 # subtitle: "少女祈祷中..."
 subtitle:
   typing:
@@ -51,7 +51,7 @@ subtitle:
     showCursor: true            # 是否显示闪烁的字符
     cursorChar: "|"             # 字符
     smartBackspace: false       # 智能退格，只删除不同的部分
-  text: "正在创建地块..."        # 当 typing.enable = false 时使用
+  text: "岂不闻，光阴如骏马加鞭，日月如落花流水"        # 当 typing.enable = false 时使用
 
 banner: "images/66.webp"
 # You can also write it in the form of the following url
@@ -471,11 +471,7 @@ algolia_search:
 preloader:
   enable: true
   text: 
-    zh-CN: 少女祈祷中...
-    zh-TW: 少女祈禱中...
-    en: Loading...
-    ja: 少女祈祷中...
-    pt-BR: Carregando...
+    zh-CN: 正在创造地块...
   icon: # default use inline svg for fast speed, you can use a image url, like '/images/taichi.png'
   rotate: true # whether to rotate the icon
 
@@ -538,7 +534,7 @@ firework:
 
 # show the copyright below each article
 article_copyright:
-  enable: false
+  enable: true
   content:
     author: true
     link: true
@@ -604,9 +600,9 @@ share:
   # - bluesky
   # - linkedin
   # - reddit
-  # - weibo
-  # - qq
-  # - weixin
+   - weibo
+   - qq
+   - weixin
 
 # show categories card on home page
 home_categories:
