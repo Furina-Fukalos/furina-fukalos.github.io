@@ -331,8 +331,8 @@ body [data-aos="zoom-in"] {
   content: "\e619";
 }
 
-.icon-tiktok:before {
-  content: "\e64a";
+.icon-weibo:before {
+  content: "\e62c";
 }
 
 .sidebar-toc-btn:before {
@@ -368,6 +368,16 @@ body [data-aos="zoom-in"] {
 .icon-taichi:before {
   font-family: "iconfont";
   content: "\e62b";
+}
+
+.icon-weixin:before {
+  font-family: "iconfont";
+  content: "\e640";
+}
+
+.icon-qq:before {
+  font-family: "iconfont";
+  content: "\e63e";
 }
 
 .icon-image:before {
@@ -3270,11 +3280,6 @@ mjx-container::-webkit-scrollbar {
   color: #bc88ff;
 }
 
-.icon-tiktok {
-  filter: drop-shadow(-1px -1px 0 #69c9d0) drop-shadow(1px 1px 0 #fe2c55);
-  color: #000000;
-}
-
 .sidebar-menu {
   margin: 20px 0;
   width: 100%;
@@ -3729,6 +3734,219 @@ mjx-container::-webkit-scrollbar {
   }
 }
 
+.popup {
+  visibility: hidden;
+  position: fixed;
+  top: 10%;
+  left: 50%;
+  width: 700px;
+  max-height: 80%;
+  margin-left: -350px;
+  background: var(--color-wrap);
+  color: var(--grey-9);
+  z-index: 9999;
+  border-radius: 10px;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: 0.3s;
+  box-shadow: 0 0 10px var(--color-meta-shadow);
+}
+
+.popup.show {
+  visibility: visible;
+  opacity: 1;
+  transform: scale(1);
+}
+
+@media screen and (max-width: 767px) {
+  .popup {
+    top: 0;
+    left: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    max-height: 100%;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .popup {
+    min-height: 350px;
+  }
+}
+
+.reimu-popup {
+  overflow: hidden;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.popup-btn-close {
+  color: var(--red-1);
+  font: 20px bold;
+  padding-left: 8px;
+  transition: 0.3s;
+}
+
+.popup-btn-close:hover {
+  opacity: 0.8;
+}
+
+.reimu-search {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--grey-9);
+  flex-shrink: 0;
+}
+
+.reimu-search-input-icon {
+  display: inline-block;
+  width: 20px;
+  font-size: 18px;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+#reimu-search-input {
+  flex: 1;
+}
+
+#reimu-search-input input {
+  width: 100%;
+  outline: none;
+  border: none;
+  background: transparent;
+  color: var(--grey-9);
+  font-size: 16px;
+  vertical-align: middle;
+  font-family: "京华老宋体", "Mulish", "Noto Serif SC", "-apple-system", "PingFang SC", "Microsoft YaHei", "sans-serif";
+}
+
+#reimu-search-input input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
+
+.reimu-powered {
+  float: right;
+  cursor: var(--cursor-default, default) !important;
+}
+
+.reimu-powered img {
+  display: inline-block;
+  height: 18px;
+  vertical-align: middle;
+}
+
+.reimu-results {
+  position: relative;
+  overflow: auto;
+  padding: 16px 32px;
+  box-sizing: border-box;
+}
+
+.reimu-results hr {
+  margin: 16px 0 8px 0;
+  border: none;
+  height: 1px;
+  background: var(--grey-9);
+}
+
+#reimu-hits {
+  margin-top: 12px;
+}
+
+#reimu-hits mark {
+  background: var(--red-1);
+  color: white;
+}
+
+.reimu-hit-item-link {
+  display: block;
+  text-decoration: none;
+  color: var(--red-2);
+  padding: 12px 0 12px 24px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.reimu-hit-item-link:before {
+  content: "";
+  width: 6px;
+  height: 12px;
+  background: var(--color-h2-after);
+  display: inline-block;
+  vertical-align: middle;
+  margin: -2px 12px 0 -24px;
+  box-shadow: var(--shadow-red-6-shadow);
+  opacity: 0.5;
+  transition: 0.2s;
+}
+
+.reimu-hit-item-link:hover:before, .reimu-hit-item-link:focus:before {
+  height: 6px;
+  border-radius: 50%;
+  opacity: 1;
+}
+
+.reimu-pagination {
+  margin: 8px auto;
+  text-align: center;
+  color: var(--grey-9);
+  overflow: hidden;
+}
+
+.reimu-pagination a {
+  padding: 10px 16px;
+  color: var(--grey-9);
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.reimu-pagination a:hover, .reimu-pagination a:focus {
+  background: var(--red-2);
+  box-shadow: var(--shadow-red-6-shadow);
+  color: #fff;
+}
+
+.reimu-pagination .pagination-item {
+  display: inline-block;
+}
+
+.reimu-pagination .page-number {
+  display: inline-block;
+  border-radius: 8px;
+  margin: 6px;
+}
+
+.reimu-pagination .current .page-number {
+  color: white;
+  background: var(--red-1);
+  font-weight: bold;
+  box-shadow: var(--shadow-red-6-shadow);
+}
+
+.reimu-pagination .disabled-item {
+  display: none;
+}
+
+.reimu-bg {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  opacity: 0.5;
+}
+
+#reimu-hits-empty {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .tagcloud a {
   display: inline-block;
   margin: 5px 5px 0 0;
@@ -3937,6 +4155,154 @@ body .aplayer .aplayer-info .aplayer-controller .aplayer-volume-wrap,
 .aplayer-lrc p,
 .aplayer-list-author {
   color: var(--grey-7) !important;
+}
+
+.share-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.share-icon {
+  margin: 8px;
+  color: var(--color-link) !important;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.share-icon:before {
+  display: block;
+  opacity: 0.8;
+  font-size: 24px;
+  transition: all 0.2s;
+  will-change: transform;
+}
+
+.share-icon:hover:before {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+#share-weixin {
+  display: none;
+  position: absolute;
+  top: -440px;
+  left: -138px;
+  background: #fff;
+  user-select: none;
+  width: 300px;
+  height: 420px;
+  overflow: hidden;
+  border-radius: 8px;
+  z-index: 50;
+  box-shadow: var(--shadow-card);
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  font-family: "-apple-system", "PingFang SC", "Microsoft YaHei", "sans-serif";
+}
+
+#share-weixin img {
+  filter: none !important;
+}
+
+#share-weixin.active {
+  display: block;
+  opacity: 1;
+  transform: scale(1);
+}
+
+.share-weixin-dom {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #fff;
+  height: 100%;
+}
+
+.share-weixin-canvas {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+.share-weixin-canvas img {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+}
+
+#share-weixin-banner {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+}
+
+#share-weixin-title {
+  padding: 10px 16px;
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--color-link);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#share-weixin-desc {
+  margin: 0 16px 10px;
+  font-size: 14px;
+  color: var(--color-default);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  line-clamp: 5;
+  overflow: hidden;
+  word-break: break-word;
+  line-height: 2;
+  position: relative;
+}
+
+#share-weixin-desc:after {
+  content: "";
+  position: absolute;
+  background: linear-gradient(rgba(255, 255, 255, 0), #fff);
+  height: 30px;
+  width: 100%;
+  left: 0;
+  bottom: 5px;
+}
+
+#share-weixin-qr {
+  width: 80px;
+  height: 80px;
+}
+
+#share-weixin-author {
+  color: var(--color-default);
+  font-size: 14px;
+  margin: 12px 0;
+}
+
+#share-weixin-theme {
+  color: var(--color-default);
+  font-size: 12px;
+}
+
+.share-weixin-qrcode {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 16px 16px;
+}
+
+.share-weixin-info {
+  display: flex;
+  flex-direction: column;
+  align-self: flex-end;
 }
 
 [data-theme="dark"] ::-webkit-scrollbar, [data-theme="dark"] ::-webkit-scrollbar-track {
