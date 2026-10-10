@@ -88,10 +88,21 @@
 
       // 将 NodeList 转换为数组，并提取需要的数据
       allItems = Array.from(items).map(function(item) {
+        var titleNode = item.querySelector("title");
+        var linkNode = item.querySelector("link");
+        var pubDateNode = item.querySelector("pubDate");
+
+        // 兼容 Atom (href) 和 RSS 2.0 (文本) 两种链接格式
+        var link = "#";
+        if (linkNode) {
+          // 优先读取 href 属性，如果没有则读取标签内的文本
+          link = linkNode.getAttribute("href") || linkNode.textContent.trim() || "#";
+        }
+
         return {
-          title: item.querySelector("title") ? item.querySelector("title").textContent : "无标题",
-          link: item.querySelector("link") ? item.querySelector("link").textContent : "#",
-          pubDate: item.querySelector("pubDate") ? item.querySelector("pubDate").textContent : ""
+          title: titleNode ? titleNode.textContent : "无标题",
+          link: link,
+          pubDate: pubDateNode ? pubDateNode.textContent : ""
         };
       });
 
