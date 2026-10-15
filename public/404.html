@@ -70,7 +70,106 @@
       </a><a class="main-nav-link-wrap" href="http://localhost:1313/friend"><div class='main-nav-icon icon '><img src="http://localhost:1313/avatar/friends.png" alt="friend icon" class="" style="height: 1em;"></div><span class="main-nav-link">友链</span>
       </a><a id="main-nav-toggle" class="nav-icon" aria-label="Toggle navigation" role="button"></a>
   </nav>
-  <nav id="sub-nav" aria-label="Secondary navigation"><a id="nav-search-btn" class="nav-icon popup-trigger" title="搜索" aria-label="搜索"></a></nav></div>
+  <nav id="sub-nav" aria-label="Secondary navigation"><a id="nav-search-btn" class="nav-icon popup-trigger" title="搜索" aria-label="搜索"></a>
+    <div id="nav-deepseek-status">
+      <a href="https://status.deepseek.com" target="_blank" rel="noopener noreferrer" title="点击查看完整状态历史">
+        <span class="nav-icon ds-status-icon">&#xf6ad;</span>
+        <span class="ds-status-text" id="ds-status-text" title="加载中">加载中</span>
+      </a>
+    </div>
+
+    <script>
+      (function() {
+        
+        const PROXY_URL = 'https://deepseekstatus.1587253748.workers.dev/';
+        
+        
+        const statusEl = document.getElementById('ds-status-text');
+
+        async function updateStatus() {
+          try {
+            const res = await fetch(PROXY_URL, { cache: 'no-cache' });
+            if (!res.ok) throw new Error('请求失败');
+            
+            const xmlText = await res.text();
+            const xml = new DOMParser().parseFromString(xmlText, 'text/xml');
+            const latestItem = xml.querySelector('item');
+            
+            if (latestItem) {
+              const title = latestItem.querySelector('title').textContent.trim();
+              
+              statusEl.textContent = title.length > 8 ? title.slice(0, 8) + '...' : title;
+              statusEl.parentElement.title = title;
+              
+              
+              if (/正常|operational|resolved/i.test(title)) {
+                statusEl.style.color = '#10b981'; 
+              } else if (/故障|outage|incident|downtime/i.test(title)) {
+                statusEl.style.color = '#ef4444'; 
+              } else {
+                statusEl.style.color = '#f59e0b'; 
+              }
+            } else {
+              statusEl.textContent = '正常运行';
+              statusEl.style.color = '#10b981';
+            }
+          } catch (err) {
+            console.error('DeepSeek 状态拉取失败:', err);
+            statusEl.textContent = '获取失败';
+            statusEl.style.color = '#9ca3af';
+            statusEl.parentElement.title = '状态获取失败，请稍后刷新';
+          }
+        }
+
+        
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', updateStatus);
+        } else {
+          updateStatus();
+        }
+
+        
+        setInterval(updateStatus, 5 * 60 * 1000);
+      })();
+    </script>
+
+    <style>
+      #nav-deepseek-status {
+        display: inline-flex;
+        align-items: center;
+        margin-left: 8px;
+      }
+      #nav-deepseek-status a {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        color: inherit;
+        text-decoration: none;
+        opacity: 0.85;
+        transition: opacity 0.2s ease;
+      }
+      #nav-deepseek-status a:hover {
+        opacity: 1;
+      }
+      .ds-status-icon {
+        line-height: 1;
+      }
+      .ds-status-text {
+        font-size: 13px;
+        white-space: nowrap;
+        max-width: 110px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      @media (max-width: 768px) {
+        .ds-status-text {
+          display: none;
+        }
+      }
+    </style>
+
+  </nav></div>
 <header id="header" aria-label="Site header"><picture></picture><img crossorigin="anonymous" fetchpriority="high" src="http://localhost:1313/images/66.webp" alt=""><div id="header-outer">
     <div id="header-title"><a href="http://localhost:1313/" id="logo">
           <h1 data-aos="slide-up">4 0 4 (ﾟ⊿ﾟ)ﾂ</h1>
