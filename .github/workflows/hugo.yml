@@ -28,7 +28,7 @@ jobs:
           hugo-version: 'latest'
           extended: true
           # 👇 指定下载官方的 Dart Sass 版本，无需手动用 npm 安装
-          dart-sass-version: 'latest'
+          dart-sass-version: '1.77.8'
 
       - name: Build
         run: hugo --minify
