@@ -28,6 +28,16 @@ jobs:
           hugo-version: 'latest'
           extended: true
 
+      # 👇 新增步骤：安装 Node.js 环境
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 👇 新增步骤：全局安装 Dart Sass
+      - name: Install Dart Sass
+        run: npm install -g sass
+
       - name: Build
         run: hugo --minify
 
