@@ -23,20 +23,12 @@ jobs:
           submodules: true
 
       - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v2
+        uses: peaceiris/actions-hugo@v3
         with:
           hugo-version: 'latest'
           extended: true
-
-      # 👇 新增步骤：安装 Node.js 环境
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      # 👇 新增步骤：全局安装 Dart Sass
-      - name: Install Dart Sass
-        run: npm install -g sass
+          # 👇 指定下载官方的 Dart Sass 版本，无需手动用 npm 安装
+          dart-sass-version: 'latest'
 
       - name: Build
         run: hugo --minify
