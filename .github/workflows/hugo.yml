@@ -5,7 +5,7 @@ on:
     branches:
       - source
   schedule:
-    - cron: '0 1 * * *' # 每天北京时间 9:00 自动构建刷新
+    - cron: '0 1 * * *'
   workflow_dispatch:
 
 permissions:
@@ -27,8 +27,21 @@ jobs:
         with:
           hugo-version: 'latest'
           extended: true
-          # 👇 指定下载官方的 Dart Sass 版本，无需手动用 npm 安装
-          dart-sass-version: '1.77.8'
+
+      - name: Install Dart Sass
+        uses: robinraju/release-downloader@v1
+        with:
+          repository: "sass/dart-sass"
+          latest: true
+          filename: "dart-sass-*-linux-x64.tar.gz"
+          tarBall: false
+          zipBall: false
+          extract: true
+          out-file-path: "dart-sass"
+
+      - name: Add Dart Sass to PATH
+        run: echo "$(pwd)/dart-sass" >> $GITHUB_PATH
+        shell: bash
 
       - name: Build
         run: hugo --minify
